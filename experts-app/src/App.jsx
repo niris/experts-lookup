@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import SearchExperts from "./SearchExpert";
+import SearchExperts from "./SearchExperts";
 
 function App() {
   const [count, setCount] = useState(0);
