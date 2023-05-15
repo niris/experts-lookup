@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./searchExperts.css";
+import "./SearchExperts.css";
 
 function SearchExperts() {
   const [skillOptions, setskillOptions] = useState([]);
