@@ -14,11 +14,14 @@ function SearchExperts() {
       setskillOptions(JSON.parse(localStorage.skills));
       return;
     }
-    fetch(`${apiUrl}/Skills`)
+    fetch(`${apiUrl}/employees`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    })
       .then((response) => response.json())
       .then((data) => {
         let skillsList = [
-          ...new Set(data.map((item) => item.skills).flat()),
+          ...new Set(data.map((item) => item.skills.languages).flat()),
         ].sort((a, b) => a.localeCompare(b));
         setskillOptions(skillsList);
         localStorage.skills = JSON.stringify(skillsList);
@@ -54,7 +57,7 @@ function SearchExperts() {
 
   function searchExperts() {
     if (skills.length > 0) {
-      fetch(`${apiUrl}/Recommandations`, {
+      fetch(`${apiUrl}/employees`, {
         method: "POST",
         body: JSON.stringify({
           skills,
@@ -132,13 +135,18 @@ function SearchExperts() {
       </form>
       {result && result.length > 0 && (
         <div className="result">
-          <h4>Recommended Skills:</h4>
+          <h4>Recommended Experts:</h4>
           {result.map((item, index) => (
             <div className="card" key={index}>
               <header>
-                <h4>{item.Name}</h4>
+                <h4>{item.name}</h4>
               </header>
-              {item.Description}
+              <p>{item.position}</p>
+              {item.skills.languages.map((item, index) => (
+                <span className="tag" key={index}>
+                  {item}{" "}
+                </span>
+              ))}
             </div>
           ))}
         </div>
