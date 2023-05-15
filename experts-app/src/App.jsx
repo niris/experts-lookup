@@ -1,13 +1,19 @@
-import { useState } from "react";
-import "./App.css";
+import { React, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Nav from "./Nav";
 import SearchExperts from "./SearchExperts";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-      <SearchExperts />
+    <Router>
+      <Nav />
+      <Routes>
+        <Route path="/" element={<SearchExperts />} />
+        {/* <Route path="/profile" element={<Profile />} /> */}
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
