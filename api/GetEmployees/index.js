@@ -1,7 +1,5 @@
 const db = require("../lib/azure-cosmosdb-mongodb");
 
-db.init();
-
 module.exports = async function (context, req) {
   if (!req.body) {
     // Get all employees

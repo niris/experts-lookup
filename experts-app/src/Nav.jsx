@@ -24,7 +24,7 @@ function Nav() {
             Search
           </Link>
           <Link
-            to="/"
+            to="/profile"
             className={activeTab === "profile" ? "active" : ""}
             onClick={() => handleTabClick("profile")}
           >
