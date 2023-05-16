@@ -24,7 +24,7 @@ function Profile() {
 
       if (response.ok) {
         console.log("Profile added successfully!");
-        setRecipe({
+        setProfile({
           name: "",
           position: "",
           startDate: "",
