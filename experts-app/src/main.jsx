@@ -10,9 +10,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 fetch(`${apiUrl}/warmup`);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
     <UserContextProvider>
     <App />
   </UserContextProvider>
-  </React.StrictMode>,
 )

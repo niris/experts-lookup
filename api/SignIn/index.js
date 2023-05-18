@@ -40,7 +40,7 @@ module.exports = async function (context, req) {
 
 async function validateCredentials(username, password) {
   try {
-    const user = await db.findItems("users",{ username: username });
+    const user = await db.findItems("profiles",{ username: username });
 
     if (!user) {
       console.log( "Username doesn't exist")

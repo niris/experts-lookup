@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 
 const profileSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    position: { type: String, required: true },
-    startDate: { type: Date, required: true },
+  username: { type: String, required: true },
+  password: { type: String, required: true },
+    name: { type: String },
+    position: { type: String },
+    startDate: { type: Date },
     skills: {
       concepts: [{ type: String }],
       languages: [{ type: String }],
       tools: [{ type: String }],
     },
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
-    userId:{type: String, required:true}
-    //mongoose.Schema.Types.ObjectId
   });
 
 const projectSchema = new mongoose.Schema({
@@ -19,13 +19,6 @@ const projectSchema = new mongoose.Schema({
     description: { type: String},
     environment: [{ type: String }]
 });
-
-
-const usersSchema = new mongoose.Schema({
-  username: { type: String, required: true },
-  password: { type: String, required: true }
-});
-
 
 async function init() {
   if (mongoose.connection.readyState === 0) {
@@ -48,8 +41,6 @@ function getModel(collectionName){
   switch(collectionName){
     case "profiles":
       return mongoose.model("Profiles", profileSchema);
-    case "users":
-      return mongoose.model("Users", usersSchema);
     case "projects":
       return mongoose.model("Projects", projectSchema);
   }
@@ -80,6 +71,19 @@ async function findItems(collection, query = {}) {
   }
 }
 
+async function updateItemById(collection, id, doc) {
+  const model = getModel(collection)
+  console.log(doc)
+  try {
+    const result = await model.findByIdAndUpdate(id,doc);
+    console.log("OKKKK", id, doc , result)
+    return result;
+  } catch (error) {
+    console.error(`Error deleting item by id: ${error.message}`);
+    throw error;
+  }
+}
+
 async function deleteItemById(collection, id) {
   const model = getModel(collection)
   try {
@@ -95,5 +99,6 @@ module.exports = {
   init,
   addItem,
   findItems,
-  deleteItemById
+  deleteItemById,
+  updateItemById
 };

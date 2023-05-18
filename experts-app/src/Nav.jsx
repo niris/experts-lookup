@@ -1,57 +1,59 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./Nav.css";
 import { UserContext } from "./UserContext";
 
 function Nav() {
-  const [activeTab, setActiveTab] = useState("search");
   const username = useContext(UserContext).username;
   console.log(username);
-
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-  };
 
   return (
     <nav className="nav">
       <div className="nav-left">
-        <Link to="/" className="brand">
+        <NavLink to="/" className="brand" exact="true">
           ExpLookup
-        </Link>
+        </NavLink>
         <div className="tabs">
-          <Link
-            to="/"
-            className={activeTab === "search" ? "active" : ""}
-            onClick={() => handleTabClick("search")}
-          >
+          <NavLink to="/" exact="true">
             Search
-          </Link>
-          <Link
-            to={"/profile/" + username}
-            className={activeTab === "profile" ? "active" : ""}
-            onClick={() => handleTabClick("profile")}
-          >
-            My Profile
-          </Link>
+          </NavLink>
+          {username && (
+            <NavLink to={"/profile/" + username}>My Profile</NavLink>
+          )}
         </div>
       </div>
       <div className="nav-right">
         <details className="dropdown" open="">
-          <summary className="button outline">
-            {" "}
+          <summary className="button outline" style={{ margin: 0 }}>
             <i className="material-icons">person</i>
           </summary>
-          <div className="card">
-            <Link to={"/profile/" + username}>
-              <p>My profile</p>{" "}
-            </Link>
-            <Link to="/signup">
-              <p>Sign up</p>{" "}
-            </Link>
-            <hr></hr>
-            <Link to="/signin">
-              <p>Sign in</p>
-            </Link>
+          <div
+            className="card"
+            style={{ zIndex: 1999, right: 0, left: "inherit" }}
+          >
+            {username && (
+              <>
+                {" "}
+                <NavLink to={"/profile/" + username}>
+                  <p>My profile</p>{" "}
+                </NavLink>
+                <NavLink to="">
+                  <p>Sign out</p>{" "}
+                </NavLink>
+              </>
+            )}
+
+            {!username && (
+              <>
+                <NavLink to="/signup">
+                  <p>Sign up</p>{" "}
+                </NavLink>
+                <hr></hr>
+                <NavLink to="/signin">
+                  <p>Sign in</p>
+                </NavLink>
+              </>
+            )}
           </div>
         </details>
       </div>

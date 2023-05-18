@@ -6,7 +6,7 @@ module.exports = async function (context, req) {
 
   try {
     // Check if the user with the provided username already exists in the database
-    const existingUser = await db.findItems("users", { username: username });
+    const existingUser = await db.findItems("profiles", { username: username });
 
     if (existingUser.lenght > 0) {
       console.log("User exist")
@@ -26,7 +26,7 @@ module.exports = async function (context, req) {
     };
 
     // Save the new user in the database
-    const addresult = await db.addItem("users", newUser);
+    const addresult = await db.addItem("profiles", newUser);
     console.log("add result", addresult)
 
     return {

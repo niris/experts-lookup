@@ -4,9 +4,10 @@ import Nav from "./Nav";
 import SearchProfiles from "./SearchProfiles";
 import Profile from "./Profile";
 import SignIn from "./SignIn";
-import SignUp from "./SignUp.jsx";
+import SignUp from "./SignUp";
 
 function App() {
+
   return (
       <Router>
         <Nav />

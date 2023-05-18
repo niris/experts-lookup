@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 const apiUrl = import.meta.env.VITE_API_URL;
 import { UserContext } from "./UserContext";
 import { useParams } from "react-router-dom";
+import "./Profile.css";
 
 function Profile() {
   const [isModifiable, setIsModifiable] = useState(false);
@@ -12,51 +13,47 @@ function Profile() {
     skills: { languages: [""], concepts: [""], tools: [""] },
     projects: [],
   });
-  const username = useContext(UserContext).username;
-  console.log(username);
+  const { username, isContextReady } = useContext(UserContext);
   const { userId } = useParams();
+  console.log(isContextReady)
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const isOwner = atob(token.split(".")[1]);
-    setIsModifiable(isOwner);
-
-    const checkProfileExistence = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/profile/${userId}`);
-        const data = await response.json();
-        console.log("response ok", data);
-        if (Object.keys(data.profile).length !== 0) {
-          const retrivedProfile = data.profile;
-          setProfile(retrivedProfile[0]);
+    
+    if (isContextReady) {
+      console.log(isContextReady);
+      const checkProfileExistence = async () => {
+        setIsModifiable(username == userId);
+        try {
+          const response = await fetch(`${apiUrl}/profile/${userId}`);
+          const data = await response.json();
+          console.log("response ok", data);
+          if (Object.keys(data.profile).length !== 0) {
+            const retrivedProfile = data.profile;
+            setProfile(retrivedProfile[0]);
+          }
+        } catch (error) {
+          console.error("Error checking profile existence:", error);
         }
-      } catch (error) {
-        console.error("Error checking profile existence:", error);
-      }
-    };
-    checkProfileExistence();
-  }, []);
+      };
+      checkProfileExistence();
+    } else {
+      console.log("Global context not ready");
+    }
+  }, [isContextReady]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await fetch(`${apiUrl}/addprofile`, {
-        method: "POST",
+      const response = await fetch(`${apiUrl}/updateprofile`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(profile),
+        body: JSON.stringify({ username: username, profile: profile }),
       });
 
       if (response.ok) {
-        console.log("Profile added successfully!");
-        setProfile({
-          name: "",
-          position: "",
-          startDate: "",
-          skills: { languages: [""], concepts: [""], tools: [""] },
-          projects: [],
-        });
+        console.log("Profile update successfully!");
       } else {
         console.error("Error adding profile:", response.status);
       }
@@ -112,7 +109,7 @@ function Profile() {
             value={profile.name}
             onChange={handleChange}
             required
-            disabled={!isModifiable}
+            readOnly={!isModifiable}
           />
         </div>
         <div>
@@ -123,7 +120,7 @@ function Profile() {
             value={profile.position}
             onChange={handleChange}
             required
-            disabled={!isModifiable}
+            readOnly={!isModifiable}
           />
         </div>
         <div>
@@ -135,7 +132,7 @@ function Profile() {
             value={profile.startDate}
             onChange={handleChange}
             required
-            disabled={!isModifiable}
+            readOnly={!isModifiable}
           />
         </div>
         <label>Languages:</label>
@@ -148,31 +145,38 @@ function Profile() {
                 onChange={(e) => handleChangeSkill(e, index)}
                 required
                 className="col"
+                readOnly={!isModifiable}
               />
-              <button
-                type="button"
-                className="col-1 button clear text-error icon-only"
-                onClick={() => handleClickDeleteSkill(index)}
-              >
-                <i className="material-icons">delete</i>
-              </button>
+              {isModifiable && (
+                <button
+                  type="button"
+                  className="col-1 button clear text-error icon-only"
+                  onClick={() => handleClickDeleteSkill(index)}
+                >
+                  <i className="material-icons">delete</i>
+                </button>
+              )}
             </div>
           ))}
         </div>
-        <div className="is-center">
-          <button
-            type="button"
-            className="button clear primary"
-            onClick={handleClickAddskill}
-          >
-            + more skills ...
-          </button>
-        </div>
-        <div className="is-right">
-          <button type="submit" className="button">
-            Update profile
-          </button>
-        </div>
+        {isModifiable && (
+          <>
+            <div className="is-center">
+              <button
+                type="button"
+                className="button clear primary"
+                onClick={handleClickAddskill}
+              >
+                + more skills ...
+              </button>
+            </div>
+            <div className="is-right">
+              <button type="submit" className="button">
+                Update profile
+              </button>
+            </div>
+          </>
+        )}
       </form>
     </>
   );
