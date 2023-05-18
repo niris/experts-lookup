@@ -6,13 +6,14 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.1"
   },
   "main": "index.js",
   "directories": {
     "lib": "lib"
   },
-  "devDependencies": {},
   "author": "",
   "license": "ISC",
   "description": ""

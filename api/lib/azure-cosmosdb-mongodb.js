@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const employeeSchema = new mongoose.Schema({
+const profileSchema = new mongoose.Schema({
     name: { type: String, required: true },
     position: { type: String, required: true },
     startDate: { type: Date, required: true },
@@ -10,16 +10,22 @@ const employeeSchema = new mongoose.Schema({
       tools: [{ type: String }],
     },
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
+    userId:{type: String, required:true}
+    //mongoose.Schema.Types.ObjectId
   });
 
 const projectSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String},
-    environment: [{ type: String }],
+    environment: [{ type: String }]
 });
 
 
-const employeeModel = mongoose.model("Employees", employeeSchema);
+const usersSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  password: { type: String, required: true }
+});
+
 
 async function init() {
   if (mongoose.connection.readyState === 0) {
@@ -38,31 +44,46 @@ async function init() {
   }
 }
 
-async function addEmployee(doc) {
+function getModel(collectionName){
+  switch(collectionName){
+    case "profiles":
+      return mongoose.model("Profiles", profileSchema);
+    case "users":
+      return mongoose.model("Users", usersSchema);
+    case "projects":
+      return mongoose.model("Projects", projectSchema);
+  }
+}
+
+async function addItem(collection,doc) {
+  const model = getModel(collection)
   try {
-    const modelToInsert = new employeeModel(doc);
+    const modelToInsert = new model(doc);
     const result = await modelToInsert.save();
     return result;
   } catch (error) {
-    console.error(`Error finding item by id: ${error.message}`);
+    console.error(`Error adding item: ${error.message}`);
     throw error;
   }
 }
 
-async function searchEmployees(query = {}) {
+async function findItems(collection, query = {}) {
+  const model = getModel(collection)
+  console.log("model", model)
   try {
-    const employees = await employeeModel.find(query);
-    console.log("Results:", employees);
-    return employees;
+    const result = await model.find(query);
+    console.log("Results:", result);
+    return result;
   } catch (error) {
     console.error(`Error finding items: ${error.message}`);
     throw error;
   }
 }
 
-async function deleteEmployeeById(id) {
+async function deleteItemById(collection, id) {
+  const model = getModel(collection)
   try {
-    const result = await employeeModel.findByIdAndDelete(id);
+    const result = await model.findByIdAndDelete(id);
     return result;
   } catch (error) {
     console.error(`Error deleting item by id: ${error.message}`);
@@ -70,36 +91,9 @@ async function deleteEmployeeById(id) {
   }
 }
 
-const projectModel = mongoose.model("Projects", projectSchema);
-
-async function addProject(doc) {
-    try {
-      const modelToInsert = new projectModel(doc);
-      const result = await modelToInsert.save();
-      return result;
-    } catch (error) {
-      console.error(`Error finding item by id: ${error.message}`);
-      throw error;
-    }
-  }
-
-async function searchProjects(query = {}) {
-    try {
-      const projects = await projectModel.find(query);
-      console.log("Results:", projects);
-      return projects;
-    } catch (error) {
-      console.error(`Error finding items: ${error.message}`);
-      throw error;
-    }
-  }
-
-  
 module.exports = {
   init,
-  addEmployee,
-  searchEmployees,
-  deleteEmployeeById,
-  addProject,
-  searchProjects
+  addItem,
+  findItems,
+  deleteItemById
 };

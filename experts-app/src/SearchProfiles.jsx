@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import "./SearchExperts.css";
+import "./SearchProfiles.css";
 
-function SearchExperts() {
+function SearchProfiles() {
   const [skillOptions, setskillOptions] = useState([]);
   const [skillValue, setskillValue] = useState("");
   const [skills, setskills] = useState([]);
@@ -14,10 +14,7 @@ function SearchExperts() {
       setskillOptions(JSON.parse(localStorage.skills));
       return;
     }
-    fetch(`${apiUrl}/employees`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    })
+    fetch(`${apiUrl}/profiles`)
       .then((response) => response.json())
       .then((data) => {
         let skillsList = [
@@ -45,7 +42,7 @@ function SearchExperts() {
   function addskill(event) {
     event.preventDefault();
     if (skillValue.trim() === "") {
-      return searchExperts();
+      return searchProfile();
     }
     setskills((prevskills) => [...prevskills, skillValue.trim()]);
     setskillValue("");
@@ -55,14 +52,10 @@ function SearchExperts() {
     setskills((prevskills) => prevskills.filter((_, i) => i !== index));
   }
 
-  function searchExperts() {
+  function searchProfile() {
     if (skills.length > 0) {
-      fetch(`${apiUrl}/employees`, {
-        method: "POST",
-        body: JSON.stringify({
-          skills,
-        }),
-      })
+      const queryParams = new URLSearchParams({skills});
+      fetch(`${apiUrl}/profiles?${queryParams}`)
         .then((response) => response.json())
         .then((data) => {
           console.log("Response:", data);
@@ -117,7 +110,7 @@ function SearchExperts() {
         <div className="button-container">
           <button
             type="button"
-            onClick={searchExperts}
+            onClick={searchProfile}
             className="button primary"
             disabled={skills.length === 0}
           >
@@ -135,7 +128,7 @@ function SearchExperts() {
       </form>
       {result && result.length > 0 && (
         <div className="result">
-          <h4>Recommended Experts:</h4>
+          <h4>Recommended Profile:</h4>
           {result.map((item, index) => (
             <div className="card" key={index}>
               <header>
@@ -155,4 +148,4 @@ function SearchExperts() {
   );
 }
 
-export default SearchExperts;
+export default SearchProfiles;

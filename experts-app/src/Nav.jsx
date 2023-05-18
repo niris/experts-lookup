@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import "./Nav.css";
+import { UserContext } from "./UserContext";
 
 function Nav() {
   const [activeTab, setActiveTab] = useState("search");
+  const username = useContext(UserContext).username;
+  console.log(username);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -24,11 +27,11 @@ function Nav() {
             Search
           </Link>
           <Link
-            to="/profile"
+            to={"/profile/" + username}
             className={activeTab === "profile" ? "active" : ""}
             onClick={() => handleTabClick("profile")}
           >
-            Profile
+            My Profile
           </Link>
         </div>
       </div>
@@ -38,14 +41,18 @@ function Nav() {
             {" "}
             <i className="material-icons">person</i>
           </summary>
-          <form className="card row" style={{zIndex:'2'}}>
-            <input className="col-12" placeholder="username" />
-            <input className="col-12" placeholder="password" type="password" />
-            <footer className="is-right">
-              <a className="button clear">Sign up</a>
-              <button type="submit">Sign in</button>
-            </footer>
-          </form>
+          <div className="card">
+            <Link to={"/profile/" + username}>
+              <p>My profile</p>{" "}
+            </Link>
+            <Link to="/signup">
+              <p>Sign up</p>{" "}
+            </Link>
+            <hr></hr>
+            <Link to="/signin">
+              <p>Sign in</p>
+            </Link>
+          </div>
         </details>
       </div>
     </nav>
