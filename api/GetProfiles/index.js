@@ -2,8 +2,6 @@ const db = require("../lib/azure-cosmosdb-mongodb");
 
 module.exports = async function (context, req) {
   if (Object.keys(req.params).length == 0) {//Get all users
-    console.log("we don't have any query");
-
     // Get all profiles
     try {
       const profiles = await db.findItems("profiles", {});
@@ -18,7 +16,7 @@ module.exports = async function (context, req) {
       throw error;
     }
   } else {// Get users matching the query params
-    console.log(req.params);
+    context.log(req.params);
     const skills = req.query.skills.split(",");
     const profile = await searchProfile(skills);
     context.res = {
