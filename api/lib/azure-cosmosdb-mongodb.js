@@ -76,7 +76,6 @@ async function updateItemById(collection, id, doc) {
   console.log(doc)
   try {
     const result = await model.findByIdAndUpdate(id,doc);
-    console.log("OKKKK", id, doc , result)
     return result;
   } catch (error) {
     console.error(`Error deleting item by id: ${error.message}`);

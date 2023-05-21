@@ -1,47 +1,50 @@
 import React, { useState, useEffect, useContext } from "react";
-const apiUrl = import.meta.env.VITE_API_URL;
 import { UserContext } from "./UserContext";
 import { useParams } from "react-router-dom";
 import "./Profile.css";
+import SkillsList from "./SkillsList";
 
-function Profile() {
+const apiUrl = import.meta.env.VITE_API_URL;
+
+const Profile = () => {
   const [isModifiable, setIsModifiable] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
     position: "",
     startDate: "",
-    skills: { languages: [""], concepts: [""], tools: [""] },
+    skills: { languages: [], concepts: [], tools: [] },
     projects: [],
   });
   const { username, isContextReady } = useContext(UserContext);
   const { userId } = useParams();
-  console.log(isContextReady)
+  console.log("is context ready 1", isContextReady);
 
   useEffect(() => {
-    
     if (isContextReady) {
-      console.log(isContextReady);
-      const checkProfileExistence = async () => {
-        setIsModifiable(username == userId);
-        try {
-          const response = await fetch(`${apiUrl}/profile/${userId}`);
-          const data = await response.json();
-          console.log("response ok", data);
-          if (Object.keys(data.profile).length !== 0) {
-            const retrivedProfile = data.profile;
-            setProfile(retrivedProfile[0]);
-          }
-        } catch (error) {
-          console.error("Error checking profile existence:", error);
-        }
-      };
+      console.log("is context ready 2", isContextReady);
       checkProfileExistence();
     } else {
       console.log("Global context not ready");
     }
   }, [isContextReady]);
 
-  async function handleSubmit(e) {
+  const checkProfileExistence = async () => {
+    setIsModifiable(username === userId);
+    try {
+      const response = await fetch(`${apiUrl}/profile/${userId}`);
+      const data = await response.json();
+      console.log("response ok", data);
+      if (Object.keys(data.profile).length !== 0) {
+        const retrievedProfile = data.profile;
+        console.log("retriveProfile : ", retrievedProfile);
+        setProfile(retrievedProfile[0]);
+      }
+    } catch (error) {
+      console.error("Error checking profile existence:", error);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(`${apiUrl}/updateprofile`, {
@@ -60,42 +63,40 @@ function Profile() {
     } catch (error) {
       console.error("Error adding profile:", error);
     }
-  }
+  };
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile((prevProfile) => ({
       ...prevProfile,
       [name]: value,
     }));
-  }
+  };
 
-  function handleChangeSkill(e, index) {
-    const new_languages = [...profile.skills.languages];
-    new_languages[index] = e.target.value;
+  const handleSkillChange = (e, type, index) => {
+    const newSkills = [...profile.skills[type]];
+    newSkills[index] = e.target.value;
     setProfile((prevProfile) => ({
       ...prevProfile,
-      skills: { languages: new_languages },
+      skills: { ...prevProfile.skills, [type]: newSkills },
     }));
-  }
+  };
 
-  function handleClickAddskill(e) {
+  const handleAddSkill = (type) => {
     setProfile((prevProfile) => ({
       ...prevProfile,
-      skills: { languages: [...profile.skills.languages, ""] },
+      skills: { ...prevProfile.skills, [type]: [...prevProfile.skills[type], ""] },
     }));
-    console.log(profile.skills);
-  }
+  };
 
-  function handleClickDeleteSkill(index) {
-    const updated_languages = profile.skills.languages;
-    updated_languages.splice(index, 1);
-    console.log(updated_languages);
+  const handleDeleteSkill = (type, index) => {
+    const updatedSkills = [...profile.skills[type]];
+    updatedSkills.splice(index, 1);
     setProfile((prevProfile) => ({
       ...prevProfile,
-      skills: { languages: updated_languages },
+      skills: { ...prevProfile.skills, [type]: updatedSkills },
     }));
-  }
+  };
 
   return (
     <>
@@ -128,58 +129,51 @@ function Profile() {
           <input
             id="startDate"
             name="startDate"
+            title={profile.startDate.slice(0, 10)}
             type="date"
-            value={profile.startDate}
+            value={profile.startDate.slice(0, 10)}
             onChange={handleChange}
             required
             readOnly={!isModifiable}
           />
         </div>
         <label>Languages:</label>
-        <div>
-          {profile.skills.languages.map((lang, index) => (
-            <div key={index} className="row">
-              <input
-                type="text"
-                value={lang}
-                onChange={(e) => handleChangeSkill(e, index)}
-                required
-                className="col"
-                readOnly={!isModifiable}
-              />
-              {isModifiable && (
-                <button
-                  type="button"
-                  className="col-1 button clear text-error icon-only"
-                  onClick={() => handleClickDeleteSkill(index)}
-                >
-                  <i className="material-icons">delete</i>
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+        <SkillsList
+          skills={profile.skills.languages}
+          type="languages"
+          isModifiable={isModifiable}
+          onSkillChange={handleSkillChange}
+          onDeleteSkill={handleDeleteSkill}
+          onAddSkill={handleAddSkill}
+        />
+        <label>Concepts:</label>
+        <SkillsList
+          skills={profile.skills.concepts}
+          type="concepts"
+          isModifiable={isModifiable}
+          onSkillChange={handleSkillChange}
+          onDeleteSkill={handleDeleteSkill}
+          onAddSkill={handleAddSkill}
+        />
+          <label>Tools:</label>
+        <SkillsList
+          skills={profile.skills.tools}
+          type="tools"
+          isModifiable={isModifiable}
+          onSkillChange={handleSkillChange}
+          onDeleteSkill={handleDeleteSkill}
+          onAddSkill={handleAddSkill}
+        />
         {isModifiable && (
-          <>
-            <div className="is-center">
-              <button
-                type="button"
-                className="button clear primary"
-                onClick={handleClickAddskill}
-              >
-                + more skills ...
-              </button>
-            </div>
-            <div className="is-right">
-              <button type="submit" className="button">
-                Update profile
-              </button>
-            </div>
-          </>
+          <div className="is-right">
+            <button type="submit" className="button">
+              Update profile
+            </button>
+          </div>
         )}
       </form>
     </>
   );
-}
+};
 
 export default Profile;

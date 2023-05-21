@@ -6,8 +6,7 @@ module.exports = async function (context, req) {
   console.log(id)
   try {
     const profile = await db.findItems("profiles", { username: id });
-    console.log("profile", profile);
-
+    console.log("profile", profile);    
     context.res = {
       status: 200,
       body: { profile },
