@@ -11,7 +11,7 @@ module.exports = async function (context, req) {
       body: { profile },
     };
   } catch (error) {
-    context.log("Error:", error);
+    context.log("Error getting profiles:", error);
     context.res = {
       status: 500,
       body: { error: "An error occurred" },
