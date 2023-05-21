@@ -20,6 +20,7 @@ const Profile = () => {
   const languagesRef = useRef();
   const conceptsRef = useRef();
   const toolsRef = useRef();
+  console.log("Username :", username);
 
   useEffect(() => {
     if (isContextReady) {
@@ -29,7 +30,12 @@ const Profile = () => {
     }
   }, [isContextReady]);
 
+  useEffect(() => {
+    setIsModifiable(username === userId);
+  }, [username]);
+
   const checkProfileExistence = async () => {
+    console.log("Username :", username, "UserId", userId);
     setIsModifiable(username === userId);
     try {
       const response = await fetch(`${apiUrl}/profile/${userId}`);
@@ -46,10 +52,10 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    profile.skills.languages= languagesRef.current.getSkills();
-    profile.skills.concepts= conceptsRef.current.getSkills();
-    profile.skills.tools= toolsRef.current.getSkills();
-    
+    profile.skills.languages = languagesRef.current.getSkills();
+    profile.skills.concepts = conceptsRef.current.getSkills();
+    profile.skills.tools = toolsRef.current.getSkills();
+
     try {
       const response = await fetch(`${apiUrl}/updateprofile`, {
         method: "PUT",
@@ -108,9 +114,9 @@ const Profile = () => {
           <input
             id="startDate"
             name="startDate"
-            title={profile.startDate?profile.startDate.slice(0, 10):""}
+            title={profile.startDate ? profile.startDate.slice(0, 10) : ""}
             type="date"
-            value={profile.startDate?profile.startDate.slice(0, 10):""}
+            value={profile.startDate ? profile.startDate.slice(0, 10) : ""}
             onChange={handleChange}
             required
             readOnly={!isModifiable}

@@ -8,6 +8,11 @@ export const UserContextProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const [isContextReady, setIsContextReady] = useState(false);
 
+  const signOut = () => {
+    setToken("");
+    setUsername("")
+    localStorage.removeItem("token");
+  }
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -21,7 +26,7 @@ export const UserContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ username, setUsername, token, setToken, isContextReady }}>
+    <UserContext.Provider value={{ username, setUsername, token, setToken, isContextReady,signOut }}>
       {children}
     </UserContext.Provider>
   );

@@ -4,8 +4,15 @@ import "./Nav.css";
 import { UserContext } from "./UserContext";
 
 function Nav() {
-  const username = useContext(UserContext).username;
+  
+  const { username, signOut } =   useContext(UserContext)
   console.log(username);
+
+  const handleButtonClicksignOut=()=>{
+    console.log("Sign out")
+    signOut()
+    console.log("token",localStorage.token)
+  }
 
   return (
     <nav className="nav">
@@ -37,9 +44,7 @@ function Nav() {
                 <NavLink to={"/profile/" + username}>
                   <p>My profile</p>{" "}
                 </NavLink>
-                <NavLink to="">
-                  <p>Sign out</p>{" "}
-                </NavLink>
+                <button onClick={handleButtonClicksignOut}>Sign out</button>
               </>
             )}
 
@@ -50,8 +55,9 @@ function Nav() {
                 </NavLink>
                 <hr></hr>
                 <NavLink to="/signin">
-                  <p>Sign in</p>
+                <p>Sign in</p>
                 </NavLink>
+
               </>
             )}
           </div>
