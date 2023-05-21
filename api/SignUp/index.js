@@ -9,7 +9,7 @@ module.exports = async function (context, req) {
     const existingUser = await db.findItems("profiles", { username: username });
 
     if (existingUser.lenght > 0) {
-      console.log("User exist")
+      context.log("User exist")
       return {
         status: 400,
         body: { success: false, message: "Username already exists" },
@@ -27,7 +27,7 @@ module.exports = async function (context, req) {
 
     // Save the new user in the database
     const addresult = await db.addItem("profiles", newUser);
-    console.log("add result", addresult)
+    context.log("add result", addresult)
 
     return {
       status: 201,
