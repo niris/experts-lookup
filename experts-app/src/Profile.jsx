@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "./UserContext";
 import { useParams } from "react-router-dom";
 import "./Profile.css";
@@ -18,11 +17,12 @@ const Profile = () => {
   });
   const { username, isContextReady } = useContext(UserContext);
   const { userId } = useParams();
-  console.log("is context ready 1", isContextReady);
+  const languagesRef = useRef();
+  const conceptsRef = useRef();
+  const toolsRef = useRef();
 
   useEffect(() => {
     if (isContextReady) {
-      console.log("is context ready 2", isContextReady);
       checkProfileExistence();
     } else {
       console.log("Global context not ready");
@@ -34,10 +34,8 @@ const Profile = () => {
     try {
       const response = await fetch(`${apiUrl}/profile/${userId}`);
       const data = await response.json();
-      console.log("response ok", data);
       if (Object.keys(data.profile).length !== 0) {
         const retrievedProfile = data.profile;
-        console.log("retriveProfile : ", retrievedProfile);
         setProfile(retrievedProfile[0]);
       }
     } catch (error) {
@@ -47,6 +45,11 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    profile.skills.languages= languagesRef.current.getSkills();
+    profile.skills.concepts= conceptsRef.current.getSkills();
+    profile.skills.tools= toolsRef.current.getSkills();
+    
     try {
       const response = await fetch(`${apiUrl}/updateprofile`, {
         method: "PUT",
@@ -71,16 +74,6 @@ const Profile = () => {
     setProfile((prevProfile) => ({
       ...prevProfile,
       [name]: value,
-    }));
-  };
-
-  const handleSkillsChange = (skills, type) => {
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      skills: {
-        ...prevProfile.skills,
-        [type]: skills,
-      },
     }));
   };
 
@@ -128,21 +121,21 @@ const Profile = () => {
           skills={profile.skills.languages}
           type="languages"
           isModifiable={isModifiable}
-          onSkillsChange={handleSkillsChange}
+          ref={languagesRef}
         />
         <label>Concepts:</label>
         <SkillsList
           skills={profile.skills.concepts}
           type="concepts"
           isModifiable={isModifiable}
-          onSkillsChange={handleSkillsChange}
+          ref={conceptsRef}
         />
         <label>Tools:</label>
         <SkillsList
           skills={profile.skills.tools}
           type="tools"
           isModifiable={isModifiable}
-          onSkillsChange={handleSkillsChange}
+          ref={toolsRef}
         />
         {isModifiable && (
           <div className="is-right">
