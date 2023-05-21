@@ -1,12 +1,9 @@
-// SkillsList.js
-
 import React, { useState,useEffect } from "react";
 
 const SkillsList = ({ skills, isModifiable, onSkillsChange, type }) => {
 
   const [initialSkills, setInitialSkills] = useState(skills);
 
-  console.log("initial",initialSkills)
 
   useEffect(() => {
     setInitialSkills(skills);
@@ -33,34 +30,30 @@ const SkillsList = ({ skills, isModifiable, onSkillsChange, type }) => {
     onSkillsChange(updatedSkills, type);
   }
 
-  const SkillItem = ({ skill, index }) => {
-    return (
-      <div className="row">
-        <input
-          type="text"
-          value={skill}
-          onChange={(e) => handleSkillChange(e, index)}
-          required
-          className="col"
-          readOnly={!isModifiable}
-        />
-        {isModifiable && (
-          <button
-            type="button"
-            className="col-1 button clear text-error icon-only"
-            onClick={() => handleDeleteSkill(index)}
-          >
-            <i className="material-icons">delete</i>
-          </button>
-        )}
-      </div>
-    );
-  };
+
 
   return (
     <div>
       {initialSkills.map((skill, index) => (
-        <SkillItem key={index} skill={skill} index={index} />
+              <div className="row" key={index}>
+              <input
+                type="text"
+                value={skill}
+                onChange={(e) => handleSkillChange(e, index)}
+                required
+                className="col"
+                readOnly={!isModifiable}
+              />
+              {isModifiable && (
+                <button
+                  type="button"
+                  className="col-1 button clear text-error icon-only"
+                  onClick={() => handleDeleteSkill(index)}
+                >
+                  <i className="material-icons">delete</i>
+                </button>
+              )}
+            </div>
       ))}
       {isModifiable && (
         <div className="is-center">
