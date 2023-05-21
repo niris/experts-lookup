@@ -1,8 +1,9 @@
 const db = require("../lib/azure-cosmosdb-mongodb");
 
 module.exports = async function (context, req) {
-  if (Object.keys(req.params).length == 0) {//Get all users
-    // Get all profiles
+
+  context.log("params : ", req.query)
+  if (Object.keys(req.query).length==0) { // Get all profiles
     try {
       const profiles = await db.findItems("profiles", {});
       context.res = {
@@ -16,8 +17,8 @@ module.exports = async function (context, req) {
       throw error;
     }
   } else {// Get users matching the query params
-    context.log(req.params);
     const skills = req.query.skills.split(",");
+    console.log("skills: ", skills);
     const profile = await searchProfile(skills);
     context.res = {
       body: profile,
@@ -29,11 +30,16 @@ module.exports = async function (context, req) {
 };
 
 async function searchProfile(skills) {
-  console.log(skills);
+  console.log("skills: ", skills);
+
   try {
     const regexPatterns = skills.map((skill) => new RegExp(skill, "i"));
     const res = await db.findItems("profiles", {
-      "skills.languages": { $in: regexPatterns },
+      $or: [
+        { "skills.languages": { $in: regexPatterns } },
+        { "skills.concepts": { $in: regexPatterns } },
+        { "skills.tools": { $in: regexPatterns } },
+      ],
     });
     return res;
   } catch (error) {
