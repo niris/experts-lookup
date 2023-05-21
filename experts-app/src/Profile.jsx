@@ -108,9 +108,9 @@ const Profile = () => {
           <input
             id="startDate"
             name="startDate"
-            title={profile.startDate.slice(0, 10)}
+            title={profile.startDate?profile.startDate.slice(0, 10):""}
             type="date"
-            value={profile.startDate.slice(0, 10)}
+            value={profile.startDate?profile.startDate.slice(0, 10):""}
             onChange={handleChange}
             required
             readOnly={!isModifiable}
