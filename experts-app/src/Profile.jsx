@@ -56,12 +56,12 @@ const Profile = () => {
       });
 
       if (response.ok) {
-        console.log("Profile update successfully!");
+        console.log("Profile updated successfully!");
       } else {
-        console.error("Error adding profile:", response.status);
+        console.error("Error updating profile:", response.status);
       }
     } catch (error) {
-      console.error("Error adding profile:", error);
+      console.error("Error updating profile:", error);
     }
   };
 
@@ -73,28 +73,13 @@ const Profile = () => {
     }));
   };
 
-  const handleSkillChange = (e, type, index) => {
-    const newSkills = [...profile.skills[type]];
-    newSkills[index] = e.target.value;
+  const handleSkillsChange = (skills, type) => {
     setProfile((prevProfile) => ({
       ...prevProfile,
-      skills: { ...prevProfile.skills, [type]: newSkills },
-    }));
-  };
-
-  const handleAddSkill = (type) => {
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      skills: { ...prevProfile.skills, [type]: [...prevProfile.skills[type], ""] },
-    }));
-  };
-
-  const handleDeleteSkill = (type, index) => {
-    const updatedSkills = [...profile.skills[type]];
-    updatedSkills.splice(index, 1);
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      skills: { ...prevProfile.skills, [type]: updatedSkills },
+      skills: {
+        ...prevProfile.skills,
+        [type]: skills,
+      },
     }));
   };
 
@@ -142,27 +127,21 @@ const Profile = () => {
           skills={profile.skills.languages}
           type="languages"
           isModifiable={isModifiable}
-          onSkillChange={handleSkillChange}
-          onDeleteSkill={handleDeleteSkill}
-          onAddSkill={handleAddSkill}
+          onSkillsChange={handleSkillsChange}
         />
         <label>Concepts:</label>
         <SkillsList
           skills={profile.skills.concepts}
           type="concepts"
           isModifiable={isModifiable}
-          onSkillChange={handleSkillChange}
-          onDeleteSkill={handleDeleteSkill}
-          onAddSkill={handleAddSkill}
+          onSkillsChange={handleSkillsChange}
         />
-          <label>Tools:</label>
+        <label>Tools:</label>
         <SkillsList
           skills={profile.skills.tools}
           type="tools"
           isModifiable={isModifiable}
-          onSkillChange={handleSkillChange}
-          onDeleteSkill={handleDeleteSkill}
-          onAddSkill={handleAddSkill}
+          onSkillsChange={handleSkillsChange}
         />
         {isModifiable && (
           <div className="is-right">

@@ -1,49 +1,54 @@
-import React, { useRef } from "react";
+// SkillsList.js
 
-function SkillsList({
-  skills,
-  type,
-  isModifiable,
-  handleChangeSkill,
-  handleClickDeleteSkill,
-  handleClickAddSkill,
-}) {
-  const inputRefs = useRef([]);
+import React, { useState,useEffect } from "react";
+
+const SkillsList = ({ skills, isModifiable, onSkillsChange, type }) => {
+
+  const [initialSkills, setInitialSkills] = useState(skills);
+
+  console.log("initial",initialSkills)
+
+  useEffect(() => {
+    setInitialSkills(skills);
+  }, [skills]);
+
+
+  const handleSkillChange = (e, index) => {
+    const newSkills = [...initialSkills];
+    newSkills[index] = e.target.value;
+    setInitialSkills(newSkills);
+    onSkillsChange(newSkills, type);
+  };
+
+  const handleAddSkill = () => {
+    setInitialSkills((prevSkills) => [...prevSkills, ""]);
+  };
+
+  function handleDeleteSkill(index) {
+    const updatedSkills = [...initialSkills];
+    console.log("before", updatedSkills);
+    updatedSkills.splice(index, 1);
+    console.log("after", updatedSkills);
+    setInitialSkills(updatedSkills);
+    onSkillsChange(updatedSkills, type);
+  }
 
   const SkillItem = ({ skill, index }) => {
-    const inputRef = useRef(null);
-
-    const handleInputChange = (e) => {
-      handleChangeSkill(e, type, index);
-    };
-
-    // Set the initial focus on the input field when it is rendered
-    React.useEffect(() => {
-      if (inputRef.current && index === 0) {
-        inputRef.current.focus();
-      }
-    }, [index]);
-
     return (
       <div className="row">
         <input
           type="text"
           value={skill}
-          onChange={handleInputChange}
+          onChange={(e) => handleSkillChange(e, index)}
           required
           className="col"
           readOnly={!isModifiable}
-          ref={(el) => (inputRefs.current[index] = el)}
-          onFocus={() => {
-            // Set the current input field reference when it receives focus
-            inputRefs.current[index] = inputRef.current;
-          }}
         />
         {isModifiable && (
           <button
             type="button"
             className="col-1 button clear text-error icon-only"
-            onClick={() => handleClickDeleteSkill(type, index)}
+            onClick={() => handleDeleteSkill(index)}
           >
             <i className="material-icons">delete</i>
           </button>
@@ -53,8 +58,8 @@ function SkillsList({
   };
 
   return (
-    <>
-      {skills.map((skill, index) => (
+    <div>
+      {initialSkills.map((skill, index) => (
         <SkillItem key={index} skill={skill} index={index} />
       ))}
       {isModifiable && (
@@ -62,14 +67,14 @@ function SkillsList({
           <button
             type="button"
             className="button clear primary"
-            onClick={() => handleClickAddSkill(type)}
+            onClick={handleAddSkill}
           >
-            + more {type}...
+            + more ...
           </button>
         </div>
       )}
-    </>
+    </div>
   );
-}
+};
 
 export default SkillsList;
