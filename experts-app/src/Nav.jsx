@@ -1,17 +1,16 @@
 import React, { useState, useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate} from "react-router-dom";
 import "./Nav.css";
 import { UserContext } from "./UserContext";
 
-function Nav() {
+const Nav = () => {
   
   const { username, signOut } =   useContext(UserContext)
-  console.log(username);
+  const navigate = useNavigate();
 
-  const handleButtonClicksignOut=()=>{
-    console.log("Sign out")
-    signOut()
-    console.log("token",localStorage.token)
+  const handleButtonClicksignOut = () => {
+    signOut();
+    navigate('/');
   }
 
   return (
