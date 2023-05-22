@@ -37,6 +37,8 @@ async function init() {
   }
 }
 
+init();
+
 function getModel(collectionName){
   switch(collectionName){
     case "profiles":
