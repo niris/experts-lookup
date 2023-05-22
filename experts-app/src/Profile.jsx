@@ -62,8 +62,9 @@ const Profile = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${localStorage.token}`
         },
-        body: JSON.stringify({ username: username, profile: profile }),
+        body: JSON.stringify({profile}),
       });
 
       if (response.ok) {
