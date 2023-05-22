@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "func start",
-    "test": ""
+    "test": "echo \"No tests yet...\""
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
