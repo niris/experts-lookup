@@ -136,12 +136,12 @@ function SearchProfiles() {
               </header>
               <p>{item.position}</p>
               {item.skills.languages.map((item, index) => (
-                <span className="tag" style={{borderColor:"red"}} key={index}>
+                <span className="tag" style={{borderColor:"#DA1212"}} key={index}>
                   {item}{" "}
                 </span>
               ))}
               {item.skills.concepts.map((item, index) => (
-                <span className="tag" style={{borderColor:"blue"}} key={index}>
+                <span className="tag" style={{borderColor:"#11468F"}} key={index}>
                   {item}{" "}
                 </span>
               ))}

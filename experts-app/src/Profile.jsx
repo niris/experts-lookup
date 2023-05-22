@@ -23,7 +23,7 @@ const Profile = () => {
   console.log("Username :", username);
 
   useEffect(() => {
-    if (isContextReady) {
+    if (isContextReady && userId) {
       checkProfileExistence();
     } else {
       console.log("Global context not ready");

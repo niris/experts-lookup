@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -29,6 +32,8 @@ const SignUp = () => {
         setPassword("");
         setConfirmPassword("");
         setMessage("You are signed up successully");
+        navigate("/signin")
+
       } else {
         console.log("Sign up failed");
         setMessage(
