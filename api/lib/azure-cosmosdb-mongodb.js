@@ -3,31 +3,34 @@ const mongoose = require("mongoose");
 const profileSchema = new mongoose.Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
-    name: { type: String },
-    position: { type: String },
-    startDate: { type: Date },
-    skills: {
-      concepts: [{ type: String }],
-      languages: [{ type: String }],
-      tools: [{ type: String }],
-    },
-    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
-  });
+  name: { type: String },
+  position: { type: String },
+  startDate: { type: Date },
+  skills: {
+    concepts: [{ type: String }],
+    languages: [{ type: String }],
+    tools: [{ type: String }],
+  },
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
+});
 
 const projectSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    description: { type: String},
-    environment: [{ type: String }]
+  title: { type: String, required: true },
+  description: { type: String },
+  environment: [{ type: String }],
 });
 
 async function init() {
   if (mongoose.connection.readyState === 0) {
     try {
-      connection = await mongoose.connect(process.env.CosmosDbConnectionString,{
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      console.log("Connected to database successfully", connection.next);
+      connection = await mongoose.connect(
+        process.env.CosmosDbConnectionString,
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }
+      );
+      console.log("Connected to database successfully");
     } catch (error) {
       console.error(`Error connecting to database: ${error.message}`);
       process.exit(1);
@@ -39,8 +42,8 @@ async function init() {
 
 init();
 
-function getModel(collectionName){
-  switch(collectionName){
+function getModel(collectionName) {
+  switch (collectionName) {
     case "profiles":
       return mongoose.model("Profiles", profileSchema);
     case "projects":
@@ -48,8 +51,8 @@ function getModel(collectionName){
   }
 }
 
-async function addItem(collection,doc) {
-  const model = getModel(collection)
+async function addItem(collection, doc) {
+  const model = getModel(collection);
   try {
     const modelToInsert = new model(doc);
     const result = await modelToInsert.save();
@@ -61,8 +64,8 @@ async function addItem(collection,doc) {
 }
 
 async function findItems(collection, query = {}) {
-  const model = getModel(collection)
-  console.log("model", model)
+  const model = getModel(collection);
+  console.log("model", model);
   try {
     const result = await model.find(query);
     console.log("Results:", result);
@@ -73,11 +76,40 @@ async function findItems(collection, query = {}) {
   }
 }
 
-async function updateItemById(collection, id, doc) {
-  const model = getModel(collection)
-  console.log(doc)
+async function findOderedItems(collection, query = {}) {
+  const model = getModel(collection);
+  console.log("model", model);
   try {
-    const result = await model.findByIdAndUpdate(id,doc);
+    const result = await model.find(  { $text: { $search: "Java" } },
+    { score: { $meta: "textScore" } }
+  ).sort({ score: { $meta: "textScore" } })
+
+    console.log("Results:", result);
+    return result;
+  } catch (error) {
+    console.error(`Error finding items: ${error.message}`);
+    throw error;
+  }
+}
+
+async function findItem(collection, query = {}) {
+  const model = getModel(collection);
+  console.log("model", model);
+  try {
+    const result = await model.findOne(query);
+    console.log("Results:", result);
+    return result;
+  } catch (error) {
+    console.error(`Error finding items: ${error.message}`);
+    throw error;
+  }
+}
+
+async function updateItemById(collection, id, doc) {
+  const model = getModel(collection);
+  console.log(doc);
+  try {
+    const result = await model.findByIdAndUpdate(id, doc);
     return result;
   } catch (error) {
     console.error(`Error deleting item by id: ${error.message}`);
@@ -86,7 +118,7 @@ async function updateItemById(collection, id, doc) {
 }
 
 async function deleteItemById(collection, id) {
-  const model = getModel(collection)
+  const model = getModel(collection);
   try {
     const result = await model.findByIdAndDelete(id);
     return result;
@@ -99,7 +131,9 @@ async function deleteItemById(collection, id) {
 module.exports = {
   init,
   addItem,
+  findItem,
   findItems,
   deleteItemById,
-  updateItemById
+  updateItemById,
+  findOderedItems
 };

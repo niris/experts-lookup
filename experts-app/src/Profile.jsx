@@ -43,7 +43,7 @@ const Profile = () => {
       const data = await response.json();
       if (Object.keys(data.profile).length !== 0) {
         const retrievedProfile = data.profile;
-        setProfile(retrievedProfile[0]);
+        setProfile(retrievedProfile);
       }
     } catch (error) {
       console.error("Error checking profile existence:", error);

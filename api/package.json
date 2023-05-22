@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "func start",
-    "test": "echo \"No tests yet...\""
+    "test": "jest test"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -16,5 +16,8 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
 }

@@ -34,13 +34,15 @@ async function searchProfile(skills) {
 
   try {
     const regexPatterns = skills.map((skill) => new RegExp(skill, "i"));
-    const res = await db.findItems("profiles", {
+    const res = await db.findItems("profiles", 
+    {
       $or: [
         { "skills.languages": { $in: regexPatterns } },
         { "skills.concepts": { $in: regexPatterns } },
         { "skills.tools": { $in: regexPatterns } },
       ],
-    });
+    },{ score: { $meta: "textScore" } });
+    console.log("res ", res)
     return res;
   } catch (error) {
     console.error(`Error generating profile: ${error.message}`);

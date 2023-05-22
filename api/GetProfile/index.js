@@ -4,7 +4,7 @@ const db = require("../lib/azure-cosmosdb-mongodb");
 module.exports = async function (context, req) {
   const id = req.params.id;
   try {
-    const profile = await db.findItems("profiles", { username: id });
+    const profile = await db.findItem("profiles", { username: id });
     context.log("profile", profile);    
     context.res = {
       status: 200,
