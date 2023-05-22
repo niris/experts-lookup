@@ -5,7 +5,10 @@ module.exports = async function (context, req) {
   const id = req.params.id;
   try {
     const profile = await db.findItem("profiles", { username: id });
-    context.log("profile", profile);    
+    context.log("profile", profile); 
+
+    profile.password = undefined;
+    context.log("filter profile", profile)
     context.res = {
       status: 200,
       body: { profile },

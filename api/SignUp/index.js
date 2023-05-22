@@ -8,37 +8,34 @@ module.exports = async function (context, req) {
     // Check if the user with the provided username already exists in the database
     const existingUser = await db.findItems("profiles", { username: username });
 
-    if (existingUser.lenght > 0) {
-      context.log("User exist")
-      return {
-        status: 400,
+    if (existingUser.length) {
+      context.res = {
+        status: 409,
         body: { success: false, message: "Username already exists" },
       };
+      return;
     }
 
     // Hash the password using bcrypt before storing it in the database
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user object with the username and hashed password
     const newUser = {
-      username: username,
+      username,
       password: hashedPassword,
     };
 
     // Save the new user in the database
     const addresult = await db.addItem("profiles", newUser);
-    context.log("add result", addresult)
 
-    return {
-      status: 201,
+    context.res = {
+      status: 200,
       body: { success: true, message: "User created successfully" },
-    };
+    };   
   } catch (error) {
-    // Handle any errors that occur during the signup process
-    context.log.error("Error creating user:", error);
-    return {
+    context.log.error("Error creating user:", error);    
+    context.res = {
       status: 500,
-      body: { success: false, message: "Error creating user" },
+      body: { success: false, message: `Error creating user: ${error}` },
     };
   }
 };

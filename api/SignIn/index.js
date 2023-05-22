@@ -40,7 +40,7 @@ module.exports = async function (context, req) {
 
 async function validateCredentials(username, password) {
   try {
-    const user = await db.findItems("profiles",{ username: username });
+    const user = await db.findItem("profiles",{ username: username });
 
     if (!user) {
       console.log( "Username doesn't exist")
@@ -48,8 +48,8 @@ async function validateCredentials(username, password) {
     }
 
     console.log("User " , user)
-    const isPasswordValid = await bcrypt.compare(password, user[0].password);
-     console.log(password, user[0].password, " is password valid", isPasswordValid)
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+     console.log(password, user.password, " is password valid", isPasswordValid)
     if (isPasswordValid) {
       console.log("Valid credientials")
       return true;

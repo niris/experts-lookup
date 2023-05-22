@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const profileSchema = new mongoose.Schema({
-  username: { type: String, required: true },
+  username: { type: String, required: true,id:true,index:true },
   password: { type: String, required: true },
   name: { type: String },
   position: { type: String },
@@ -67,7 +67,7 @@ async function findItems(collection, query = {}) {
   const model = getModel(collection);
   console.log("model", model);
   try {
-    const result = await model.find(query);
+    const result = await model.find(query,{ password: 0});
     console.log("Results:", result);
     return result;
   } catch (error) {
