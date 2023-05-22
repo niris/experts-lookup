@@ -12,17 +12,15 @@ function generateToken(payload, expiresIn) {
 
 // Verify and decode a JWT token
 function verifyToken(token) {
+  console.log("Token" , token, " JWT ", process.env.JWT_SECRET)
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Token is valid")
     return decoded;
   } catch (error) {
-    // Token is invalid or has expired
     console.log("Error verifying token",error);
-    return null;
+    return false;
   }
 }
-
 
 module.exports = {
   generateToken,
