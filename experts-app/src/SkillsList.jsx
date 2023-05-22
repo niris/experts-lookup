@@ -55,10 +55,10 @@ const SkillsList = React.forwardRef(
           <div className="is-center">
             <button
               type="button"
-              className="button clear primary"
+              className="button clear secondary"
               onClick={handleAddSkill}
             >
-              + more ...
+              <i className="material-icons">add_circle_outline</i> 
             </button>
           </div>
         )}
