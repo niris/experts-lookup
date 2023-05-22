@@ -17,16 +17,9 @@ const Nav = () => {
     <nav className="nav">
       <div className="nav-left">
         <NavLink to="/" className="brand" exact="true">
-          ExpLookup
+        <i className="material-icons">person_search</i> ExpLookup
         </NavLink>
-        <div className="tabs">
-          <NavLink to="/" exact="true">
-            Search
-          </NavLink>
-          {username && (
-            <NavLink to={"/profile/" + username}>My Profile</NavLink>
-          )}
-        </div>
+        
       </div>
       <div className="nav-right">
         <details className="dropdown" open="">

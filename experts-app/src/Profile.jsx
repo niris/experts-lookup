@@ -7,7 +7,7 @@ import SkillsList from "./SkillsList";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
-  const [isModifiable, setIsModifiable] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
     position: "",
@@ -31,12 +31,13 @@ const Profile = () => {
   }, [isContextReady]);
 
   useEffect(() => {
-    setIsModifiable(username === userId);
-  }, [username]);
+    setIsEditable(username === userId);
+    if(username === userId)
+      checkProfileExistence()
+  }, [userId]);
 
   const checkProfileExistence = async () => {
-    console.log("Username :", username, "UserId", userId);
-    setIsModifiable(username === userId);
+    setIsEditable(username === userId);
     try {
       const response = await fetch(`${apiUrl}/profile/${userId}`);
       const data = await response.json();
@@ -95,7 +96,7 @@ const Profile = () => {
             value={profile.name}
             onChange={handleChange}
             required
-            readOnly={!isModifiable}
+            readOnly={!isEditable}
           />
         </div>
         <div>
@@ -106,7 +107,7 @@ const Profile = () => {
             value={profile.position}
             onChange={handleChange}
             required
-            readOnly={!isModifiable}
+            readOnly={!isEditable}
           />
         </div>
         <div>
@@ -119,31 +120,31 @@ const Profile = () => {
             value={profile.startDate ? profile.startDate.slice(0, 10) : ""}
             onChange={handleChange}
             required
-            readOnly={!isModifiable}
+            readOnly={!isEditable}
           />
         </div>
-        <label>Languages:</label>
+        <label>Languages/Framework:</label>
         <SkillsList
           skills={profile.skills.languages}
           type="languages"
-          isModifiable={isModifiable}
+          isEditable={isEditable}
           ref={languagesRef}
-        />
-        <label>Concepts:</label>
-        <SkillsList
-          skills={profile.skills.concepts}
-          type="concepts"
-          isModifiable={isModifiable}
-          ref={conceptsRef}
         />
         <label>Tools:</label>
         <SkillsList
           skills={profile.skills.tools}
           type="tools"
-          isModifiable={isModifiable}
+          isEditable={isEditable}
           ref={toolsRef}
         />
-        {isModifiable && (
+          <label>Concepts/Metodologies:</label>
+        <SkillsList
+          skills={profile.skills.concepts}
+          type="concepts"
+          isEditable={isEditable}
+          ref={conceptsRef}
+        />
+        {isEditable && (
           <div className="is-right">
             <button type="submit" className="button">
               Update profile

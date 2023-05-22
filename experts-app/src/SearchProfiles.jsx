@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./SearchProfiles.css";
+import { NavLink } from "react-router-dom";
 
 function SearchProfiles() {
   const [skillOptions, setskillOptions] = useState([]);
@@ -54,7 +55,7 @@ function SearchProfiles() {
 
   function searchProfile() {
     if (skills.length > 0) {
-      const queryParams = new URLSearchParams({skills});
+      const queryParams = new URLSearchParams({ skills });
       fetch(`${apiUrl}/profiles?${queryParams}`)
         .then((response) => response.json())
         .then((data) => {
@@ -128,28 +129,38 @@ function SearchProfiles() {
       </form>
       {result && result.length > 0 && (
         <div className="result">
-          <h4>Recommended Profile:</h4>
+          <h4>Recommended Profiles:</h4>
           {result.map((item, index) => (
             <div className="card" key={index}>
-              <header>
-                <h4>{item.name}</h4>
-              </header>
-              <p>{item.position}</p>
-              {item.skills.languages.map((item, index) => (
-                <span className="tag" style={{borderColor:"#DA1212"}} key={index}>
-                  {item}{" "}
-                </span>
-              ))}
-              {item.skills.concepts.map((item, index) => (
-                <span className="tag" style={{borderColor:"#11468F"}} key={index}>
-                  {item}{" "}
-                </span>
-              ))}
-              {item.skills.tools.map((item, index) => (
-                <span className="tag" key={index}>
-                  {item}{" "}
-                </span>
-              ))}
+              <NavLink to={"/profile/"+item.username} >
+                <header>
+                  <h4>{item.name}</h4>
+                </header>
+                <p>{item.position}</p>
+                {item.skills.languages.map((item, index) => (
+                  <span
+                    className="tag"
+                    style={{ borderColor: "#DA1212" }}
+                    key={index}
+                  >
+                    {item}
+                  </span>
+                ))}
+                {item.skills.concepts.map((item, index) => (
+                  <span
+                    className="tag"
+                    style={{ borderColor: "#11468F" }}
+                    key={index}
+                  >
+                    {item}
+                  </span>
+                ))}
+                {item.skills.tools.map((item, index) => (
+                  <span className="tag" key={index}>
+                    {item}
+                  </span>
+                ))}
+              </NavLink>
             </div>
           ))}
         </div>

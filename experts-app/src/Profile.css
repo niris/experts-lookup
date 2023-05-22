@@ -2,3 +2,9 @@ input:read-only{
     --color-lightGrey: transparent;
 
 }
+
+label{
+    display: inline-block;
+    margin-top: 0.5em;
+    color:var(--color-primary)
+}
