@@ -8,6 +8,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
   const [isEditable, setIsEditable] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
   const [profile, setProfile] = useState({
     name: "",
     position: "",
@@ -20,7 +21,6 @@ const Profile = () => {
   const languagesRef = useRef();
   const conceptsRef = useRef();
   const toolsRef = useRef();
-  console.log("Username :", username);
 
   useEffect(() => {
     if (isContextReady && userId) {
@@ -32,8 +32,7 @@ const Profile = () => {
 
   useEffect(() => {
     setIsEditable(username === userId);
-    if(username === userId)
-      checkProfileExistence()
+    if (username === userId) checkProfileExistence();
   }, [userId]);
 
   const checkProfileExistence = async () => {
@@ -62,17 +61,19 @@ const Profile = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${localStorage.token}`
+          Authorization: `Bearer ${localStorage.token}`,
         },
-        body: JSON.stringify({profile}),
+        body: JSON.stringify({ profile }),
       });
 
       if (response.ok) {
-        console.log("Profile updated successfully!");
+        setResponseMessage("Profile updated successfully!");
       } else {
+        setResponseMessage("Error updating profile");
         console.error("Error updating profile:", response.status);
       }
     } catch (error) {
+      setResponseMessage("Error updating profile");
       console.error("Error updating profile:", error);
     }
   };
@@ -138,7 +139,7 @@ const Profile = () => {
           isEditable={isEditable}
           ref={toolsRef}
         />
-          <label>Concepts/Metodologies:</label>
+        <label>Concepts/Metodologies:</label>
         <SkillsList
           skills={profile.skills.concepts}
           type="concepts"
@@ -150,6 +151,11 @@ const Profile = () => {
             <button type="submit" className="button">
               Update profile
             </button>
+            {responseMessage && (
+              <div>
+                <p>{responseMessage}</p>
+              </div>
+            )}
           </div>
         )}
       </form>

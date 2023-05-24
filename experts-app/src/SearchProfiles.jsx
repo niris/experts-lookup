@@ -7,6 +7,7 @@ function SearchProfiles() {
   const [skillValue, setskillValue] = useState("");
   const [skills, setskills] = useState([]);
   const [result, setResult] = useState(null);
+  const [isSearchEvent, setIsSearchEvent] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -32,6 +33,7 @@ function SearchProfiles() {
   useEffect(() => {
     if (skills.length === 0) {
       setResult(null);
+      setIsSearchEvent(false);
     }
   }, [skills]);
 
@@ -54,6 +56,7 @@ function SearchProfiles() {
   }
 
   function searchProfile() {
+    setIsSearchEvent(true);
     if (skills.length > 0) {
       const queryParams = new URLSearchParams({ skills });
       fetch(`${apiUrl}/profiles?${queryParams}`)
@@ -78,7 +81,7 @@ function SearchProfiles() {
             list="skillList"
             value={skillValue}
             onChange={(e) => setskillValue(e.target.value)}
-            placeholder="add skill"
+            placeholder="fill in a skill and press Enter or click +"
             className="col"
           />
           <datalist id="skillList">
@@ -127,44 +130,50 @@ function SearchProfiles() {
           </button>
         </div>
       </form>
-      {result && result.length > 0 && (
-        <div className="result">
-          <h4>Recommended Profiles:</h4>
-          {result.map((item, index) => (
-            <div className="card" key={index}>
-              <NavLink to={"/profile/"+item.username} >
-                <header>
-                  <h4>{item.name}</h4>
-                </header>
-                <p>{item.position}</p>
-                {item.skills.languages.map((item, index) => (
-                  <span
-                    className="tag"
-                    style={{ borderColor: "#DA1212" }}
-                    key={index}
-                  >
-                    {item}
-                  </span>
-                ))}
-                {item.skills.concepts.map((item, index) => (
-                  <span
-                    className="tag"
-                    style={{ borderColor: "#11468F" }}
-                    key={index}
-                  >
-                    {item}
-                  </span>
-                ))}
-                {item.skills.tools.map((item, index) => (
-                  <span className="tag" key={index}>
-                    {item}
-                  </span>
-                ))}
-              </NavLink>
+      {result &&
+        (result.length > 0 ? (
+          <div className="result">
+            <h4>Recommended Profiles:</h4>
+            {result.map((item, index) => (
+              <div className="card" key={index}>
+                <NavLink to={"/profile/" + item.username}>
+                  <header>
+                    <h4>{item.name}</h4>
+                  </header>
+                  <p>{item.position}</p>
+                  {item.skills.languages.map((lang, index) => (
+                    <span
+                      className="tag"
+                      style={{ borderColor: "#DA1212" }}
+                      key={index}
+                    >
+                      {lang}
+                    </span>
+                  ))}
+                  {item.skills.concepts.map((concept, index) => (
+                    <span
+                      className="tag"
+                      style={{ borderColor: "#11468F" }}
+                      key={index}
+                    >
+                      {concept}
+                    </span>
+                  ))}
+                  {item.skills.tools.map((tool, index) => (
+                    <span className="tag" key={index}>
+                      {tool}
+                    </span>
+                  ))}
+                </NavLink>
+              </div>
+            ))}
+          </div>
+        ) : (
+            <div className="result text-light">
+              <p>No profile found for the searched skill(s) :/</p>
             </div>
-          ))}
-        </div>
-      )}
+          
+        ))}
     </div>
   );
 }
