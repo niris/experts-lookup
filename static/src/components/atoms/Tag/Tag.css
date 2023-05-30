@@ -1,0 +1,13 @@
+.tag-language, .tag-concept, .tag-search {
+    display: inline-block;
+    padding: 0.5em;
+    text-align: center;
+    border-radius: 0.5em;
+    margin: 0.5em;
+    text-transform: capitalize;
+    background-color: var(--tag-color);
+}
+
+.tag-language{--tag-color:rgb(178, 190, 205);}
+.tag-concept{--tag-color: rgb(238, 164, 187);}
+.tag-search{--tag-color: rgb(250, 251, 252); border:solid lightgrey}
