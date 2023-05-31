@@ -3,10 +3,11 @@ import "./Tag.css";
 interface TagProps {
   tagType: string;
   tagValue: string;
+  onClick?: () => void;
 }
 
-export const Tag = ({ tagType, tagValue }: TagProps) => {
+export const Tag = ({ tagType, tagValue, onClick}: TagProps) => {
   return (
-      <span className={`tag-${tagType}`}>{tagValue}</span>
+      <span className={`tag-${tagType} rounded-full text-xs	` } onClick={onClick}>{tagValue}</span>
   );
 };

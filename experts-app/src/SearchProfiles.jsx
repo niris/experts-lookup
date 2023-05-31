@@ -7,7 +7,6 @@ function SearchProfiles() {
   const [skillValue, setskillValue] = useState("");
   const [skills, setskills] = useState([]);
   const [result, setResult] = useState(null);
-  const [isSearchEvent, setIsSearchEvent] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -33,7 +32,6 @@ function SearchProfiles() {
   useEffect(() => {
     if (skills.length === 0) {
       setResult(null);
-      setIsSearchEvent(false);
     }
   }, [skills]);
 
@@ -56,7 +54,6 @@ function SearchProfiles() {
   }
 
   function searchProfile() {
-    setIsSearchEvent(true);
     if (skills.length > 0) {
       const queryParams = new URLSearchParams({ skills });
       fetch(`${apiUrl}/profiles?${queryParams}`)

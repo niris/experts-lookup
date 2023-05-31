@@ -11,7 +11,20 @@ interface InputProps {
 }
 
 export const Input = ({inputType,isEditable=true,...props}:InputProps) => {
+ 
+  function getClassName(inputType: HTMLInputTypeAttribute) {
+    switch (inputType) {
+      case "search":
+        return "border p-2 rounded";
+      case "submit":
+        return "border p-2 rounded";
+      default:
+        return "border-2";
+    }
+  }
+    const classNames = getClassName(inputType);
+
   return (
-    <input type={inputType} readOnly={!isEditable} {...props} />
+    <input type={inputType} className={classNames} readOnly={!isEditable} {...props} />
   );
 };

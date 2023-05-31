@@ -6,7 +6,7 @@ name: Build and deploy Node.js project to Azure Function App - experts-lookup-ap
 on:
   push:
     branches:
-      - main
+      - v4-sql
     paths: 'api/**'
   workflow_dispatch:
 
